@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jbr_pharmica/utils/theme/app_theme.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../controllers/clinical_controller.dart';
 
 class StatusBannerWidget extends StatelessWidget {
@@ -12,51 +12,62 @@ class StatusBannerWidget extends StatelessWidget {
 
     return Obx(() {
       final isOnline = controller.isOnline.value;
+      final isOfflineMode = controller.isOfflineMode.value;
+      final isSyncing = controller.isSyncing.value;
 
-      final bannerBgColor = isOnline ? AppColors.onlineColor : AppColors.offlineColor;
-      final icon = isOnline ? Icons.cloud_done_rounded : Icons.wifi_off_rounded;
-      final message = isOnline
-          ? 'Online — Synchronized with clinical server'
-          : 'Offline — Using downloaded clinical information';
+      final isOffline = !isOnline || isOfflineMode;
 
-      return InkWell(
-        onTap: () => controller.toggleStatusBanner(),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          decoration: BoxDecoration(
-            color: bannerBgColor.withOpacity(0.12),
-            border: Border(
-              bottom: BorderSide(
-                color: bannerBgColor.withOpacity(0.3),
-                width: 1,
-              ),
+      final bannerBgColor = isOffline ? AppTheme.offlineColor : AppTheme.onlineColor;
+      final icon = isOffline ? Icons.wifi_off_rounded : Icons.cloud_done_rounded;
+
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: bannerBgColor.withOpacity(0.12),
+          border: Border(
+            bottom: BorderSide(
+              color: bannerBgColor.withOpacity(0.3),
+              width: 1,
             ),
           ),
-          child: Row(
-            children: [
-              Icon(
-                icon,
-                size: 18,
-                color: bannerBgColor,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  message,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: bannerBgColor,
-                  ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 20,
+              color: bannerBgColor,
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                controller.statusMessage.value,
+                style: TextStyle(
+                  color: bannerBgColor.withOpacity(0.95),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
                 ),
               ),
-              Icon(
-                Icons.swap_horiz_rounded,
-                size: 16,
-                color: bannerBgColor.withOpacity(0.7),
+            ),
+            if (isSyncing)
+              SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(bannerBgColor),
+                ),
+              )
+            else
+              IconButton(
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                color: bannerBgColor,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                tooltip: 'Sync clinical data',
+                onPressed: () => controller.syncData(),
               ),
-            ],
-          ),
+          ],
         ),
       );
     });

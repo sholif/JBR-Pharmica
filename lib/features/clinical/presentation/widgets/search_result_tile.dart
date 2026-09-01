@@ -1,181 +1,135 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jbr_pharmica/utils/theme/app_theme.dart';
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/theme/app_theme.dart';
+import '../../domain/entities/antibiotic.dart';
+import '../../domain/entities/disease.dart';
 import '../../domain/entities/search_result.dart';
 
 class SearchResultTile extends StatelessWidget {
   final SearchResult result;
 
-  const SearchResultTile({super.key, required this.result});
+  const SearchResultTile({
+    super.key,
+    required this.result,
+  });
 
   @override
   Widget build(BuildContext context) {
-    if (result.type == SearchResultType.disease) {
-      return _buildDiseaseTile(context);
-    } else {
-      return _buildAntibioticTile(context);
-    }
-  }
-
-  Widget _buildDiseaseTile(BuildContext context) {
-    final disease = result.disease!;
-    final recCount = result.recommendations.length;
+    final isDisease = result.type == SearchResultType.disease;
+    final badgeColor = isDisease ? AppTheme.primaryColor : AppTheme.accentColor;
+    final badgeText = isDisease ? 'Condition' : 'Medicine';
+    final badgeIcon = isDisease ? Icons.coronavirus_outlined : Icons.medication_outlined;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          Get.toNamed(AppRoutes.diseaseDetail, arguments: disease.id);
+          if (isDisease) {
+            final disease = result.entity as Disease;
+            Get.toNamed(AppRoutes.diseaseDetail, arguments: disease.id);
+          } else {
+            final antibiotic = result.entity as Antibiotic;
+            Get.toNamed(AppRoutes.antibioticDetail, arguments: antibiotic.id);
+          }
         },
-        borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryColor.withOpacity(0.1),
-                      shape: BoxShape.circle,
+                      color: badgeColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.coronavirus_rounded, color: AppColors.primaryColor, size: 24),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
+                        Icon(badgeIcon, size: 14, color: badgeColor),
+                        const SizedBox(width: 4),
                         Text(
-                          disease.name,
-                          style: const TextStyle(
-                            fontSize: 16,
+                          badgeText,
+                          style: TextStyle(
+                            color: badgeColor,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          disease.category,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: AppColors.primaryColor,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 6,
-                runSpacing: 4,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: Text(
-                      'Matched: ${result.matchedField}',
-                      style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
-                    ),
-                  ),
-                  if (recCount > 0)
+                  const Spacer(),
+                  if (result.matchReason.isNotEmpty)
                     Container(
+                      width: 200,
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: AppColors.accentColor.withOpacity(0.1),
+                        color: Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
-                        '$recCount Treatment Guidelines',
-                        style: const TextStyle(fontSize: 11, color: AppColors.accentColor, fontWeight: FontWeight.bold),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        result.matchReason,
+                        style: TextStyle(
+                          color: Colors.grey.shade700,
+                          fontSize: 11,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ),
                 ],
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAntibioticTile(BuildContext context) {
-    final antibiotic = result.antibiotic!;
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: InkWell(
-        onTap: () {
-          Get.toNamed(AppRoutes.antibioticDetail, arguments: antibiotic.id);
-        },
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: AppColors.accentColor.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(Icons.medication_rounded, color: AppColors.accentColor, size: 24),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          antibiotic.name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          'Generic: ${antibiotic.genericName}',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: Text(
-                  'Matched: ${result.matchedField}',
-                  style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+              const SizedBox(height: 10),
+              Text(
+                result.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
                 ),
               ),
+              const SizedBox(height: 4),
+              Text(
+                result.subtitle,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppTheme.textSecondary,
+                  height: 1.3,
+                ),
+              ),
+              if (result.tags.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 4,
+                  children: result.tags.take(4).map((tag) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: Text(
+                        '#$tag',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
             ],
           ),
         ),
