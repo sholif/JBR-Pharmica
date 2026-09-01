@@ -1,23 +1,23 @@
-import 'disease.dart';
-import 'antibiotic.dart';
-import 'recommendation.dart';
-
 enum SearchResultType { disease, antibiotic }
 
 class SearchResult {
+  final String id;
   final SearchResultType type;
-  final Disease? disease;
-  final Antibiotic? antibiotic;
-  final List<Recommendation> recommendations;
-  final String matchedField;
+  final String title;
+  final String subtitle;
+  final List<String> tags;
+  final String matchReason;
   final int relevanceScore;
+  final dynamic entity; // Disease or Antibiotic
 
   const SearchResult({
+    required this.id,
     required this.type,
-    this.disease,
-    this.antibiotic,
-    this.recommendations = const [],
-    required this.matchedField,
+    required this.title,
+    required this.subtitle,
+    required this.tags,
+    required this.matchReason,
     required this.relevanceScore,
+    required this.entity,
   });
 }

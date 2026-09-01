@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jbr_pharmica/utils/theme/app_theme.dart';
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../controllers/clinical_controller.dart';
 
 class AntibioticDetailPage extends StatefulWidget {
@@ -33,7 +33,7 @@ class _AntibioticDetailPageState extends State<AntibioticDetailPage> {
       ),
       body: Obx(() {
         if (controller.isLoadingDetail.value) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.primaryColor));
+          return const Center(child: CircularProgressIndicator(color: AppTheme.primaryColor));
         }
 
         final detail = controller.selectedAntibioticDetail.value;
@@ -49,48 +49,44 @@ class _AntibioticDetailPageState extends State<AntibioticDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Antibiotic Header Card
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: AppColors.accentColor.withOpacity(0.1),
-                              shape: BoxShape.circle,
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppTheme.accentColor.withOpacity(0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.medication, color: AppTheme.accentColor, size: 30),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              antibiotic.name,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.textPrimary,
+                              ),
                             ),
-                            child: const Icon(Icons.medication_rounded, color: AppColors.accentColor, size: 28),
-                          ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  antibiotic.name,
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.textPrimary,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Generic: ${antibiotic.genericName}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: AppColors.textSecondary,
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                ),
-                              ],
+                            const SizedBox(height: 4),
+                            Text(
+                              'Generic Name: ${antibiotic.genericName}',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: AppTheme.textSecondary,
+                                fontStyle: FontStyle.italic,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -98,12 +94,13 @@ class _AntibioticDetailPageState extends State<AntibioticDetailPage> {
               ),
               const SizedBox(height: 24),
 
+              // Related Conditions Section
               Text(
-                'Associated Conditions & Guidelines (${recommendations.length})',
+                'Related Conditions & Indications (${recommendations.length})',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  color: AppTheme.textPrimary,
                 ),
               ),
               const SizedBox(height: 12),
@@ -112,7 +109,7 @@ class _AntibioticDetailPageState extends State<AntibioticDetailPage> {
                 const Card(
                   child: Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: Text('No associated medical conditions listed for this antibiotic.'),
+                    child: Text('No related conditions found for this medicine.'),
                   ),
                 )
               else
@@ -123,7 +120,7 @@ class _AntibioticDetailPageState extends State<AntibioticDetailPage> {
                   itemBuilder: (context, index) {
                     final rec = recommendations[index];
                     final isFirstLine = rec.type.toLowerCase().contains('first');
-                    final typeColor = isFirstLine ? AppColors.onlineColor : AppColors.accentColor;
+                    final typeColor = isFirstLine ? AppTheme.onlineColor : AppTheme.accentColor;
 
                     return Card(
                       margin: const EdgeInsets.only(bottom: 12),
@@ -138,6 +135,16 @@ class _AntibioticDetailPageState extends State<AntibioticDetailPage> {
                             children: [
                               Row(
                                 children: [
+                                  Expanded(
+                                    child: Text(
+                                      rec.diseaseName ?? 'Condition #${rec.diseaseId}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppTheme.primaryColor,
+                                      ),
+                                    ),
+                                  ),
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                     decoration: BoxDecoration(
@@ -153,18 +160,9 @@ class _AntibioticDetailPageState extends State<AntibioticDetailPage> {
                                       ),
                                     ),
                                   ),
-                                  const Spacer(),
-                                  const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary),
+                                  const SizedBox(width: 6),
+                                  const Icon(Icons.chevron_right_rounded, color: AppTheme.textSecondary),
                                 ],
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                rec.diseaseName ?? 'Condition #${rec.diseaseId}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.primaryColor,
-                                ),
                               ),
                               const Divider(height: 20),
                               Row(
@@ -192,17 +190,17 @@ class _AntibioticDetailPageState extends State<AntibioticDetailPage> {
     return Expanded(
       child: Column(
         children: [
-          Icon(icon, size: 18, color: AppColors.primaryColor),
+          Icon(icon, size: 18, color: AppTheme.primaryColor),
           const SizedBox(height: 4),
           Text(
             label,
-            style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+            style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 2),
           Text(
             value,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
           ),
         ],
       ),

@@ -1,5 +1,5 @@
 abstract class AppRoutes {
-  static const clinicalRefScr = '/clinical-ref-scr';
+  static const search = '/';
   static const diseaseDetail = '/disease-detail';
   static const antibioticDetail = '/antibiotic-detail';
 }

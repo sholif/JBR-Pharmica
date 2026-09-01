@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jbr_pharmica/utils/theme/app_theme.dart';
+import 'core/bindings/initial_binding.dart';
 import 'core/routes/app_pages.dart';
+import 'core/theme/app_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +17,8 @@ class JbrPharmicaApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'JBR Pharmica',
       debugShowCheckedModeBanner: false,
-      theme: AppColors.lightTheme,
+      theme: AppTheme.lightTheme,
+      initialBinding: InitialBinding(),
       initialRoute: AppPages.initial,
       getPages: AppPages.routes,
     );

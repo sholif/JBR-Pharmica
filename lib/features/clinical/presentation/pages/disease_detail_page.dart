@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jbr_pharmica/core/routes/app_routes.dart';
-import 'package:jbr_pharmica/utils/theme/app_theme.dart';
+import '../../../../core/routes/app_routes.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../controllers/clinical_controller.dart';
 
 class DiseaseDetailPage extends StatefulWidget {
@@ -33,7 +33,7 @@ class _DiseaseDetailPageState extends State<DiseaseDetailPage> {
       ),
       body: Obx(() {
         if (controller.isLoadingDetail.value) {
-          return const Center(child: CircularProgressIndicator(color: AppColors.primaryColor));
+          return const Center(child: CircularProgressIndicator(color: AppTheme.primaryColor));
         }
 
         final detail = controller.selectedDiseaseDetail.value;
@@ -49,6 +49,7 @@ class _DiseaseDetailPageState extends State<DiseaseDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Disease Overview Card
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
@@ -60,10 +61,10 @@ class _DiseaseDetailPageState extends State<DiseaseDetailPage> {
                           Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: AppColors.primaryColor.withOpacity(0.1),
+                              color: AppTheme.primaryColor.withOpacity(0.1),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.coronavirus, color: AppColors.primaryColor, size: 28),
+                            child: const Icon(Icons.coronavirus, color: AppTheme.primaryColor, size: 28),
                           ),
                           const SizedBox(width: 14),
                           Expanded(
@@ -75,20 +76,20 @@ class _DiseaseDetailPageState extends State<DiseaseDetailPage> {
                                   style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.textPrimary,
+                                    color: AppTheme.textPrimary,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: AppColors.accentColor.withOpacity(0.12),
+                                    color: AppTheme.accentColor.withOpacity(0.12),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
                                     disease.category,
                                     style: const TextStyle(
-                                      color: AppColors.accentColor,
+                                      color: AppTheme.accentColor,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 12,
                                     ),
@@ -106,7 +107,7 @@ class _DiseaseDetailPageState extends State<DiseaseDetailPage> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.textSecondary,
+                            color: AppTheme.textSecondary,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -130,12 +131,13 @@ class _DiseaseDetailPageState extends State<DiseaseDetailPage> {
               ),
               const SizedBox(height: 24),
 
+              // Recommendations Section
               Text(
                 'Treatment Recommendations (${recommendations.length})',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  color: AppTheme.textPrimary,
                 ),
               ),
               const SizedBox(height: 12),
@@ -155,7 +157,7 @@ class _DiseaseDetailPageState extends State<DiseaseDetailPage> {
                   itemBuilder: (context, index) {
                     final rec = recommendations[index];
                     final isFirstLine = rec.type.toLowerCase().contains('first');
-                    final typeColor = isFirstLine ? AppColors.onlineColor : AppColors.accentColor;
+                    final typeColor = isFirstLine ? AppTheme.onlineColor : AppTheme.accentColor;
 
                     return Card(
                       margin: const EdgeInsets.only(bottom: 12),
@@ -186,7 +188,7 @@ class _DiseaseDetailPageState extends State<DiseaseDetailPage> {
                                     ),
                                   ),
                                   const Spacer(),
-                                  const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary),
+                                  const Icon(Icons.chevron_right_rounded, color: AppTheme.textSecondary),
                                 ],
                               ),
                               const SizedBox(height: 12),
@@ -195,7 +197,7 @@ class _DiseaseDetailPageState extends State<DiseaseDetailPage> {
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.primaryColor,
+                                  color: AppTheme.primaryColor,
                                 ),
                               ),
                               if (rec.genericName != null && rec.genericName!.isNotEmpty)
@@ -203,7 +205,7 @@ class _DiseaseDetailPageState extends State<DiseaseDetailPage> {
                                   'Generic: ${rec.genericName}',
                                   style: const TextStyle(
                                     fontSize: 13,
-                                    color: AppColors.textSecondary,
+                                    color: AppTheme.textSecondary,
                                     fontStyle: FontStyle.italic,
                                   ),
                                 ),
@@ -233,17 +235,17 @@ class _DiseaseDetailPageState extends State<DiseaseDetailPage> {
     return Expanded(
       child: Column(
         children: [
-          Icon(icon, size: 18, color: AppColors.primaryColor),
+          Icon(icon, size: 18, color: AppTheme.primaryColor),
           const SizedBox(height: 4),
           Text(
             label,
-            style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+            style: const TextStyle(fontSize: 11, color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 2),
           Text(
             value,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
           ),
         ],
       ),
